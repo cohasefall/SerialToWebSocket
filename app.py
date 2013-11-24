@@ -2,6 +2,7 @@ from tornado import websocket, web, ioloop
 import json
 import threading
 import serial
+from time import sleep
 
 clList = []
 
@@ -15,6 +16,7 @@ def read_from_port(ser):
 
 			for cl in clList:
 				cl.write_message(jsondata)
+		sleep(0.5)
 
 # Tornado 
 class RootHandler(web.RequestHandler):
