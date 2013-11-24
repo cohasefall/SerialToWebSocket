@@ -37,7 +37,7 @@ app = web.Application([
 
 if __name__ == '__main__':
 	# Serial
-	ser = serial.Serial(4, timeout=0) # read from COM5
+	ser = serial.Serial(4) # read from COM5
 	thread = threading.Thread(target=read_from_port, args=(ser,))
 	thread.setDaemon(True)
 	thread.start()
