@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Serial To WebSocket</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+	
+<body>
+	<div class="container">
+		<div id="message"></span>
+		
+	</div>
+	<script type="text/javascript">
+		var ws = new WebSocket('ws://localhost:8080/ws');
+		var message = $('#message');
+		
+		ws.onopen = function() {
+			console.log("open");
+		}
+		ws.onmessage = function(e) {
+			console.log("receive message");
+			var data = JSON.parse(e.data);
+			var result = $("<div/>").text(JSON.stringify(data));
+			message.append(result);
+		}
+		ws.onclose = function(e) {
+			console.log('close');
+		}
+		ws.onerror = function(e) {
+			console.log(e.message);
+		}
+	</script>
+</body>
+</html>
