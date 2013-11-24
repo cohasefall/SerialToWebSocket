@@ -2,9 +2,10 @@ from tornado import websocket, web, ioloop
 import json
 import threading
 import serial
-from time import sleep
+import signal
 
 clList = []
+is_closing = False
 
 # Read From SerialPort
 def read_from_port(ser):
@@ -16,7 +17,16 @@ def read_from_port(ser):
 
 			for cl in clList:
 				cl.write_message(jsondata)
-		sleep(0.5)
+		
+# signal 
+def signal_handler(signum, frame):
+	global is_closing
+	is_closing = True
+
+def try_exit():
+	global is_closing
+	if is_closing:
+		ioloop.IOLoop.instance().stop()
 
 # Tornado 
 class RootHandler(web.RequestHandler):
@@ -44,9 +54,10 @@ if __name__ == '__main__':
 	thread.setDaemon(True)
 	thread.start()
 	
+	# ctrl+c
+	signal.signal(signal.SIGINT, signal_handler);
+	
 	app.listen(8080)
-	try:
-		ioloop.IOLoop.instance().start()
-	except KeyboardInterrupt:
-		ioloop.IOLoop.instance().stop()
+	ioloop.PeriodicCallback(try_exit, 100).start()
+	ioloop.IOLoop.instance().start()
 
