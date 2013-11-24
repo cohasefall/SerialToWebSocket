@@ -45,5 +45,8 @@ if __name__ == '__main__':
 	thread.start()
 	
 	app.listen(8080)
-	ioloop.IOLoop.instance().start()
+	try:
+		ioloop.IOLoop.instance().start()
+	except KeyboardInterrupt:
+		ioloop.IOLoop.instance().stop()
 
