@@ -10,7 +10,7 @@ def read_from_port(ser):
 	while True:
 		data = ser.readline().rstrip()
 		if data != '':
-			data = {"message": data}
+			data = {"data": data}
 			jsondata = json.dumps(data)
 
 			for cl in clList:
@@ -30,23 +30,9 @@ class WebSocketHandler(websocket.WebSocketHandler):
 		if self in clList:
 			clList.remove(self)
 
-class SerialHandler(web.RequestHandler):
-	@web.asynchronous
-	def get(self, *args):
-		self.finish()
-		data = {"message": "test"}
-		data = json.dumps(data)
-		for cl in clList:
-			cl.write_message(data)
-
-	@web.asynchronous
-	def post(self):
-		pass
-
 app = web.Application([
 		(r'/', RootHandler),
-		(r'/ws', WebSocketHandler),
-		(r'/serial', SerialHandler)
+		(r'/ws', WebSocketHandler)
 ])
 
 if __name__ == '__main__':
